@@ -3,7 +3,8 @@ import pandas as pd
 import joblib
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-from regression.regression_train import regression_page, predict_page
+from regression.regression_train import regression_page, regression_predict_page
+from classification.classification_train import classification_page, classification_predict_page
 
 # Sample credentials
 USER_CREDENTIALS = {
@@ -44,16 +45,26 @@ def model_page():
     
     if model_type == "Regression":
         regression_page()
+    elif model_type == "Classification":
+        classification_page()
     else:
         st.title(f"You chose: {model_type} Model")
         st.write(f"You can start building your {model_type.lower()} model here!")
+
+    if st.button("Go to Model Page"):
+        model_page()
+        st.session_state['model_type'] = ''  # Reset the model type if needed
+        # st.rerun()  # Navigate back to the model page
 
 
 def main():
     if 'logged_in' in st.session_state and st.session_state['logged_in']:
         if 'model_type' in st.session_state:
             if 'model_trained' in st.session_state and st.session_state['model_trained']:
-                predict_page()  # Direct to prediction page if model is trained
+                if st.session_state['model_type'] == "Regression":
+                    regression_predict_page()
+                elif st.session_state['model_type'] == "Classification":
+                    classification_predict_page()
             else:
                 model_page()  # Stay on the training page
         else:
