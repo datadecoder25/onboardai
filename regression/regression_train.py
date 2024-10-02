@@ -128,12 +128,12 @@ def predict_page():
     # Upload CSV file for prediction
     prediction_file = st.file_uploader("Upload a CSV file for prediction", type=["csv"], key="prediction_file")
     # Show the top 5 rows of the DataFrame
-    st.subheader("Top 5 rows of the uploaded test CSV file:")
-    st.write(prediction_file.head())
 
     if prediction_file is not None and 'model_trained' in st.session_state and st.session_state['model_trained']:
         # Load the prediction CSV
         predict_df = pd.read_csv(prediction_file)
+        st.subheader("Top 5 rows of the uploaded test CSV file:")
+        st.write(predict_df.head())
         
         # Getting the relevant details
         predictor_column = st.session_state['predictor_column']
