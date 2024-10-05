@@ -189,28 +189,28 @@ def num_col_preprocessing_test(df_encoded, column_tags):
             df_encoded['year_difference_'+col] = df_encoded[col].apply(lambda x: (today.year - x))
     return df_encoded
 
-def main():
-    model_dict = {}
-    # Load the dataset
-    file_path = '/Users/sprosad/Downloads/others/new_dea/onboardai/data/regression/house_price_train.csv'  # Update with your file path
-    df = pd.read_csv(file_path)
-    threshold = 0.5 * len(df)  # 70% of the total number of rows
-    target_col = 'SalePrice'
+# def main():
+#     model_dict = {}
+#     # Load the dataset
+#     file_path = '/Users/sprosad/Downloads/others/new_dea/onboardai/data/regression/house_price_train.csv'  # Update with your file path
+#     df = pd.read_csv(file_path)
+#     threshold = 0.5 * len(df)  # 70% of the total number of rows
+#     target_col = 'SalePrice'
     
-    # Drop columns where the number of NaN values is greater than the threshold
-    df_cleaned = df.dropna(thresh=threshold, axis=1)
-    df_cleaned = df_cleaned.dropna(subset=[target_col])
+#     # Drop columns where the number of NaN values is greater than the threshold
+#     df_cleaned = df.dropna(thresh=threshold, axis=1)
+#     df_cleaned = df_cleaned.dropna(subset=[target_col])
     
-    column_tags = tag_columns(df_cleaned, target_col)
-    df_cleaned = converting_dtypes(df_cleaned, column_tags)
-    df_cleaned = target_preprocessing(df_cleaned, target_col)
-    df_cleaned = imputation(df_cleaned, column_tags)
-    df_cleaned, column_tags = dates_preprocessing(df_cleaned, column_tags)
-    df_encoded, significant_cat_cols = string_col_preprocessing_train(df_cleaned, column_tags,target_col)
-    df_encoded, significant_predictors = num_col_preprocessing_train(df_encoded, column_tags, target_col)  
-    df_final = df_encoded[significant_cat_cols+significant_predictors+[target_col]]
-    model_dict['significant_cat_cols']=significant_cat_cols
-    model_dict['significant_predictors']=significant_predictors
+#     column_tags = tag_columns(df_cleaned, target_col)
+#     df_cleaned = converting_dtypes(df_cleaned, column_tags)
+#     df_cleaned = target_preprocessing(df_cleaned, target_col)
+#     df_cleaned = imputation(df_cleaned, column_tags)
+#     df_cleaned, column_tags = dates_preprocessing(df_cleaned, column_tags)
+#     df_encoded, significant_cat_cols = string_col_preprocessing_train(df_cleaned, column_tags,target_col)
+#     df_encoded, significant_predictors = num_col_preprocessing_train(df_encoded, column_tags, target_col)  
+#     df_final = df_encoded[significant_cat_cols+significant_predictors+[target_col]]
+#     model_dict['significant_cat_cols']=significant_cat_cols
+#     model_dict['significant_predictors']=significant_predictors
     
-    print("DONE...!!!")
-    return df_final, model_dict
+#     print("DONE...!!!")
+#     return df_final, model_dict
