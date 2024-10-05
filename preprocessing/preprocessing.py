@@ -125,7 +125,6 @@ def string_col_preprocessing_train(df_cleaned, column_tags, target_col):
         f_val, p_val = stats.f_oneway(*[group[target_col].values for name, group in df_encoded.groupby(col)])
         if p_val<=0.05:
            significant_cat_cols.append(col) 
-           counter+=1
     
     return df_encoded, significant_cat_cols
 

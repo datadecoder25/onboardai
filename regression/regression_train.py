@@ -53,15 +53,12 @@ def regression_page():
             df_cleaned = target_preprocessing(df_cleaned, target_col)
             df_cleaned = imputation(df_cleaned, column_tags)
             df_cleaned, column_tags = dates_preprocessing(df_cleaned, column_tags)
-            df_encoded, significant_cat_cols, counter = string_col_preprocessing_train(df_cleaned, column_tags,target_col)
+            df_encoded, significant_cat_cols= string_col_preprocessing_train(df_cleaned, column_tags,target_col)
             df_encoded, significant_predictors = num_col_preprocessing_train(df_encoded, column_tags, target_col)  
             df_final = df_encoded[significant_cat_cols+significant_predictors+[target_col]]
-            st.write(f'counter: {counter}')
 
             # Button to train the model
             if st.button("Train Model"):
-                st.write(df_final.shape)
-                st.write(predictor_column)
                 st.session_state['predictor_column'] = predictor_column
                 
                 # Store trained DataFrame in session state for later use
