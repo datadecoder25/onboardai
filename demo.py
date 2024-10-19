@@ -5,6 +5,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from regression.regression_train import regression_page, regression_predict_page
 from classification.classification_train import classification_page, classification_predict_page
+from forecasting.forecasting import forecasting_page, forecast_predict_page
+from nlp.math_tutor import math_solver_page
 
 # Sample credentials
 USER_CREDENTIALS = {
@@ -34,7 +36,7 @@ def login_page():
 def welcome_page():
     st.title("Welcome to AI")
     st.write("You have successfully logged in! What ML model do you want to build?")
-    option = st.selectbox("Select an option", ["Select an option", "Regression", "Classification"])
+    option = st.selectbox("Select an option", ["Select an option", "Regression", "Classification", "Math Solver","Forecasting"])
 
     if option != "Select an option":
         st.session_state['model_type'] = option  # Store selected option
@@ -47,6 +49,10 @@ def model_page():
         regression_page()
     elif model_type == "Classification":
         classification_page()
+    elif model_type == "Math Solver":
+        math_solver_page()
+    elif model_type == "Forecasting":
+        forecasting_page()
     else:
         st.title(f"You chose: {model_type} Model")
         st.write(f"You can start building your {model_type.lower()} model here!")
@@ -65,6 +71,8 @@ def main():
                     regression_predict_page()
                 elif st.session_state['model_type'] == "Classification":
                     classification_predict_page()
+                elif st.session_state['model_type'] == "Forecasting":
+                    forecast_predict_page()
             else:
                 model_page()  # Stay on the training page
         else:
