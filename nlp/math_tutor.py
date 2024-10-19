@@ -1,8 +1,44 @@
-import pandas as pd
 import time
 from openai import OpenAI
 import streamlit as st
+import os
 
+
+def load_password(file_path):
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"{file_path} does not exist.")
+    
+    with open(file_path, 'r') as file:
+        password = file.read().strip()  # Remove any leading/trailing whitespace
+    return password
+
+# Use the function
+password_file = 'password.txt'
+try:
+    api_key = load_password(password_file)
+except FileNotFoundError as e:
+    print(e)
+
+def get_openai_response(user_input, openai_client):
+     """
+     This function sends the user input to OpenAI's Chat API and returns the model's response.
+     """
+     try:
+         response = openai_client.chat.completions.create(
+             model="gpt-3.5-turbo",  # Specify the model for chat applications
+             messages=[
+                 {"role": "system", "content": "You are a helpful assistant."},
+                 {"role": "user", "content": user_input},
+             ]
+         )
+         # Extracting the text from the last response in the chat
+         if response.choices:
+             return response.choices[0].message.content
+         else:
+             return "No response from the model."
+     except Exception as e:
+         return f"An error occurred: {str(e)}"
+     
 def math_solver(user_input,thread,assistant, client):
     message = client.beta.threads.messages.create(
       thread_id=thread.id,
@@ -27,59 +63,57 @@ def math_solver(user_input,thread,assistant, client):
         break
     return latest_text
 
+API_KEY = api_key
+openai_client = OpenAI(api_key = API_KEY)
+
+assistant = openai_client.beta.assistants.create(
+    name="Data Jornalist",
+    instructions='''You are a personal math tutor. Write and run code to answer math questions.''',
+    model="gpt-4o-mini",
+    tools=[{"type": "code_interpreter"}],
+    )
+
+assistant = openai_client.beta.assistants.update(
+    assistant_id=assistant.id,
+    )
+
+# Create a new thread with a message that has the uploaded file's ID
+thread = openai_client.beta.threads.create()
+
 def math_solver_page():
-    message = st.chat_message("Math Assistant")
-    message.write("Hello human, I can solve math problem for you")
-    API_KEY = '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'
-    client = OpenAI(api_key = API_KEY)
+    # Create an OpenAI client with your API key
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+    st.title("Data Journalist")
 
-    # Display chat messages from history on app rerun
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+    # Initialize chat history in session state if it doesn't exist
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
 
-    # Accept user input
-    if prompt := st.chat_input("Ask me any math question..."):
-        # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        # Display user message in chat message container
-        with st.chat_message("user"):
-            st.markdown(prompt)
+    for d in st.session_state.chat_history:
+        st.write("You:", d['user'])
+        st.write("Chatbot:", d['chatbot'])
 
-    # Display assistant response in chat message container
-        with st.chat_message("assistant"):
-            stream = client.chat.completions.create(
-                model='gpt-4o-mini',
-                messages=[
-                    {"role": m["role"], "content": m["content"]}
-                    for m in st.session_state.messages
-                ],
-                stream=True,
-            )
-            response = st.write_stream(stream)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+    input_container_1 = st.empty()
+    user_input = input_container_1.text_input(label = 'Question', key = '1')
 
-    # prompt = st.chat_input("Ask something")
-    # if prompt:
-    #     st.write(f"User: {prompt}")
+    # Check for exit commands
+    if user_input:
+        input_container_2 = st.empty()
+        with input_container_2.form(key = 'my_form', clear_on_submit = True):	
+            submit_button = st.form_submit_button(label = 'Submit')
+            if submit_button:
+                response = math_solver(user_input, thread, assistant, openai_client)
+                st.session_state.chat_history.append({"user": user_input, "chatbot": response})
+
+                # Refresh the page to show the new message at the bottom
+                st.rerun()
+                time.sleep(1)			
     
-    # API_KEY = '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'
-    # client = OpenAI(api_key = API_KEY)
-    # assistant = client.beta.assistants.create(
-    #     name="Math Tutor",
-    #     instructions="You are a personal math tutor. Write and run code to answer math questions.",
-    #     tools=[{"type": "code_interpreter"}],
-    #     model="gpt-4o-mini",
-    #     )
-    # thread = client.beta.threads.create()
-    # while True:
-    #     user_input = input("You: ")
-    #     if user_input.lower() in ["quit", "exit", "bye"]:
-    #         break
-    #     response = math_solver(user_input,thread,assistant, client)
-    #     st.write("Chatbot:", response)
+                user_input = input_container_1.text_input(label = 'Question', key = '2')
+            
+                input_container_2.empty()
+    else:
+        # Update the session state with the current user input
+        st.session_state.input_text = user_input
 
     
