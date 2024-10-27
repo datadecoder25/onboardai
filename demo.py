@@ -7,6 +7,7 @@ from regression.regression_train import regression_page, regression_predict_page
 from classification.classification_train import classification_page, classification_predict_page
 from forecasting.forecasting import forecasting_page, forecast_predict_page
 from nlp.math_tutor import math_solver_page
+from data_processing.data_processing import data_processing_page
 
 # Sample credentials
 USER_CREDENTIALS = {
@@ -51,6 +52,8 @@ def model_page():
         classification_page()
     elif model_type == "Math Solver":
         math_solver_page()
+    # elif model_type == "Data Processing":
+    #     data_processing_page()
     elif model_type == "Forecasting":
         forecasting_page()
     else:
