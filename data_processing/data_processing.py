@@ -3,8 +3,9 @@ import time
 import streamlit as st
 import os
 import pandas as pd
-from pandasai import PandasAI
-# from pandasai.llm.openai import OpenAI
+# from pandasai import PandasAI
+from pandasai import SmartDataframe
+from pandasai.llm.openai import OpenAI
 
 
 def load_password(file_path):
@@ -23,21 +24,22 @@ except FileNotFoundError as e:
     print(e)
 
 API_KEY = api_key
-openai_client = OpenAI(api_key = API_KEY)
-pandas_ai = PandasAI(openai_client)
+openai_client = OpenAI(API_KEY)
+# pandas_ai = PandasAI(openai_client)
 
 
 def data_processing_page():
     st.title("Data Processing in Natural Language")
-    uploaded_file = st.file_uploader("Upload a csv file for analysis", e=['csv'])
+    uploaded_file = st.file_uploader("Upload a csv file for analysis", type=['csv'])
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
         st.write(df.head(3))
 
+        smart_df = SmartDataframe(df, config={"llm":openai_client})
         prompt = st.text_area("Enter your prompt:")
         if st.button("Generate"):
             if prompt:
                 with st.spinner("generating response..."):
-                    st.write(pandas_ai.run(df, prompt=prompt))
+                    st.write(smart_df.chat(prompt))
             else:
                 st.write("Please enter a prompt...")

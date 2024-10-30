@@ -1,2 +1,4 @@
-
+users.db
 password.txt
+.venv
+local_models/
