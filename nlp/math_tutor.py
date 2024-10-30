@@ -12,12 +12,12 @@ def load_password(file_path):
         password = file.read().strip()  # Remove any leading/trailing whitespace
     return password
 
-# Use the function
-password_file = 'password.txt'
-try:
-    api_key = load_password(password_file)
-except FileNotFoundError as e:
-    print(e)
+# # Use the function
+# password_file = 'password.txt'
+# try:
+#     api_key = load_password(password_file)
+# except FileNotFoundError as e:
+#     print(e)
 
 def get_openai_response(user_input, openai_client):
      """
@@ -63,7 +63,7 @@ def math_solver(user_input,thread,assistant, client):
         break
     return latest_text
 
-API_KEY = api_key
+API_KEY = st.secrets["OPENAI_API_KEY"]
 openai_client = OpenAI(api_key = API_KEY)
 
 assistant = openai_client.beta.assistants.create(

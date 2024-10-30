@@ -16,14 +16,14 @@ def load_password(file_path):
         password = file.read().strip()  # Remove any leading/trailing whitespace
     return password
 
-# Use the function
-password_file = 'password.txt'
-try:
-    api_key = load_password(password_file)
-except FileNotFoundError as e:
-    print(e)
+# # Use the function
+# password_file = 'password.txt'
+# try:
+#     api_key = load_password(password_file)
+# except FileNotFoundError as e:
+#     print(e)
 
-API_KEY = api_key
+API_KEY = st.secrets["OPENAI_API_KEY"]
 openai_client = OpenAI(API_KEY)
 # pandas_ai = PandasAI(openai_client)
 
