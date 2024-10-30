@@ -2,3 +2,4 @@ users.db
 password.txt
 .venv
 local_models/
+.streamlit/secrets.toml
