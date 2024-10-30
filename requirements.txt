@@ -10,4 +10,4 @@ pmdarima==2.0.4
 prophet==1.1.6
 joblib==1.4.2
 statsmodels==0.14.4
-yaml
+PyYaml
