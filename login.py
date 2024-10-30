@@ -126,7 +126,6 @@ def model_page():
         # st.rerun()  # Navigate back to the model page
 
 def welcome_page():
-    st.title(f"Welcome, {st.session_state['username']}!")
     st.write("You have successfully logged in! What ML model do you want to build?")
     option = st.selectbox("Select an option", ["Select an option", "Regression", "Classification", "Math Solver","Forecasting", "Data Analysis"])
 
